@@ -1,0 +1,7 @@
+[package]
+name = "gnusay"
+version = "0.1.0"
+authors = ["Nick Tomlin <nick.tomlin@gmail.com>"]
+
+[dependencies]
+
