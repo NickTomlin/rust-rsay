@@ -29,8 +29,12 @@ fn main () {
     // println!("{}",  gnu);
 }
 
-fn multiline (phrase: String) -> String {
+fn multi_line (phrase: String) -> String {
     String::from("hey")
+}
+
+fn single_line (phrase: String) -> String {
+    String::from("< ") + &phrase + " >"
 }
 
 pub fn format_line (phrases: Vec<String>) -> String {
@@ -39,8 +43,8 @@ pub fn format_line (phrases: Vec<String>) -> String {
     let border = (0..LINE_LENGTH).map(|_| "_").collect::<String>();
 
     let formatted = match lines {
-        0 =>  String::from("< ") + &phrase + " >",
-        _ => multiline(phrase)
+        0 =>  single_line(phrase),
+        _ => multi_line(phrase),
     };
 
     // we could "takewhile" the string has stuff in it, in increments of 40 characters
