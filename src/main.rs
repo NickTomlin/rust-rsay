@@ -48,7 +48,7 @@ pub fn format_line (phrases: Vec<String>) -> String {
     };
 
     // we could "takewhile" the string has stuff in it, in increments of 40 characters
-    format!("{border}\n{formatted}\n{border}\n{gnu}", formatted = formatted, gnu = GNU, border = border)
+    format!("{border}\n{}\n{border}\n{}", formatted, GNU, border = border)
 }
 
 #[cfg(test)]
