@@ -15,7 +15,7 @@ fn main () {
         std::process::exit(1);
     }
 
-    let formatted = format_line(args.join(" "));
+    let formatted = say(args.join(" "));
     println!("{}", formatted);
 }
 
@@ -73,7 +73,7 @@ fn single_line (phrase: String) -> String {
     format!("< {} >\n", phrase)
 }
 
-pub fn format_line (phrase: String) -> String {
+pub fn say (phrase: String) -> String {
     let number_of_chars = phrase.chars().count();
     let number_of_lines = number_of_chars / LINE_LENGTH;
     let border_length = cmp::min(LINE_LENGTH, number_of_chars);
@@ -89,8 +89,8 @@ pub fn format_line (phrase: String) -> String {
 
 #[cfg(test)]
 #[test]
-fn test_format_line () {
+fn test_say () {
     let mut x: &str = "";
-    format_line("Foo".to_string(), "Bar".to_string(), x);
+    say("Foo".to_string(), "Bar".to_string(), x);
     assert_eq!("Bar Foo", x);
 }
