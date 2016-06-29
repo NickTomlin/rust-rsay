@@ -15,22 +15,36 @@ fn main () {
     }
 
     let p = format_line(phrases);
-
     println!("{}", p);
+}
 
-    // let phrase = phrases.join("");
-    // let mut combined = String::new();
-    // format_line(phrase, &mut &combined);
+fn chunk_string (phrase: String, chunk_size: usize) -> Vec<String> {
+    let mut chunks = vec![];
+    let mut chunk = String::new();
+    let mut size = 0;
 
-    // // todo, format this to match the length of the longest string
-    // println!(" _______");
-    // print!("< {} >", combined);
-    // println!(" _______");
-    // println!("{}",  gnu);
+    for char in phrase.chars() {
+        if size == chunk_size {
+            chunks.push(chunk);
+            size = 0;
+            chunk = String::new();
+        }
+
+        chunk.push(char);
+        size = size + 1;
+    }
+
+    if !chunk.is_empty() {
+        chunks.push(chunk);
+    }
+
+    chunks
 }
 
 fn multi_line (phrase: String) -> String {
-    String::from("hey")
+    let lines = chunk_string(phrase, LINE_LENGTH);
+
+    lines.join("\n")
 }
 
 fn single_line (phrase: String) -> String {
@@ -39,10 +53,10 @@ fn single_line (phrase: String) -> String {
 
 pub fn format_line (phrases: Vec<String>) -> String {
     let phrase = phrases.join(" ");
-    let lines = phrase.chars().count() / LINE_LENGTH;
+    let number_of_lines = phrase.chars().count() / LINE_LENGTH;
     let border = (0..LINE_LENGTH).map(|_| "_").collect::<String>();
 
-    let formatted = match lines {
+    let formatted = match number_of_lines {
         0 =>  single_line(phrase),
         _ => multi_line(phrase),
     };
