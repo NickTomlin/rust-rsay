@@ -1,21 +1,22 @@
 use std::io::prelude::*;
+use std::cmp;
 
 const GNU: &'static str = include_str!("gnu.txt");
-// todo: accept a wraplength
+// todo: accept a wraplength param (-W)
 const LINE_LENGTH: usize = 40;
 
 fn main () {
-    let phrases: Vec<String> = std::env::args()
+    let args: Vec<String> = std::env::args()
         .skip(1)
         .collect();
 
-    if phrases.len() == 0 {
+    if args.len() == 0 {
         let _ = writeln!(std::io::stderr(), "Usage: gnusay PHRASE");
         std::process::exit(1);
     }
 
-    let p = format_line(phrases);
-    println!("{}", p);
+    let formatted = format_line(args.join(" "));
+    println!("{}", formatted);
 }
 
 fn chunk_string (phrase: String, chunk_size: usize) -> Vec<String> {
@@ -35,6 +36,13 @@ fn chunk_string (phrase: String, chunk_size: usize) -> Vec<String> {
     }
 
     if !chunk.is_empty() {
+        // todo: this is gross
+        // we should figure out a way to just use the padding on formatting
+        while size < chunk_size {
+            chunk.push(' ');
+            size = size + 1;
+        }
+
         chunks.push(chunk);
     }
 
@@ -43,26 +51,40 @@ fn chunk_string (phrase: String, chunk_size: usize) -> Vec<String> {
 
 fn multi_line (phrase: String) -> String {
     let lines = chunk_string(phrase, LINE_LENGTH);
+    let total_length = lines.len() - 1;
 
-    lines.join("\n")
+    let formatted_lines = lines
+        .iter()
+        .enumerate()
+        .map(|(idx, line)| {
+            let (start, end) = match idx {
+                0 => ('/', '\\'),
+                _ if idx == total_length => ('\\', '/'),
+                _ => ('|', '|'),
+            };
+
+            format!("{} {} {}\n", start, line, end)
+        });
+
+    formatted_lines.collect::<String>()
 }
 
 fn single_line (phrase: String) -> String {
-    String::from("< ") + &phrase + " >"
+    format!("< {} >\n", phrase)
 }
 
-pub fn format_line (phrases: Vec<String>) -> String {
-    let phrase = phrases.join(" ");
-    let number_of_lines = phrase.chars().count() / LINE_LENGTH;
-    let border = (0..LINE_LENGTH).map(|_| "_").collect::<String>();
+pub fn format_line (phrase: String) -> String {
+    let number_of_chars = phrase.chars().count();
+    let number_of_lines = number_of_chars / LINE_LENGTH;
+    let border_length = cmp::min(LINE_LENGTH, number_of_chars);
+    let border = (0..border_length + 2).map(|_| "-").collect::<String>();
 
     let formatted = match number_of_lines {
-        0 =>  single_line(phrase),
+        0 => single_line(phrase),
         _ => multi_line(phrase),
     };
 
-    // we could "takewhile" the string has stuff in it, in increments of 40 characters
-    format!("{border}\n{}\n{border}\n{}", formatted, GNU, border = border)
+    format!(" {border}\n{} {border}\n{}", formatted, GNU, border = border)
 }
 
 #[cfg(test)]
