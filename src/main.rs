@@ -73,7 +73,7 @@ fn single_line (phrase: String) -> String {
     format!("< {} >\n", phrase)
 }
 
-pub fn say (phrase: String) -> String {
+fn say (phrase: String) -> String {
     let number_of_chars = phrase.chars().count();
     let number_of_lines = number_of_chars / LINE_LENGTH;
     let border_length = cmp::min(LINE_LENGTH, number_of_chars);
@@ -85,12 +85,4 @@ pub fn say (phrase: String) -> String {
     };
 
     format!(" {border}\n{} {border}\n{}", formatted, GNU, border = border)
-}
-
-#[cfg(test)]
-#[test]
-fn test_say () {
-    let mut x: &str = "";
-    say("Foo".to_string(), "Bar".to_string(), x);
-    assert_eq!("Bar Foo", x);
 }
