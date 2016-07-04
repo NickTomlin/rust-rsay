@@ -2,7 +2,6 @@ use std::io::prelude::*;
 use std::cmp;
 
 const GNU: &'static str = include_str!("gnu.txt");
-// todo: accept a wraplength param (-W)
 const LINE_LENGTH: usize = 40;
 
 fn main () {
@@ -36,8 +35,6 @@ fn chunk_string (phrase: String, chunk_size: usize) -> Vec<String> {
     }
 
     if !chunk.is_empty() {
-        // todo: this is gross
-        // we should figure out a way to just use the padding on formatting
         while size < chunk_size {
             chunk.push(' ');
             size = size + 1;
