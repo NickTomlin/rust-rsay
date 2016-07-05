@@ -92,8 +92,8 @@ fn main () {
         .collect();
     let mut opts = Options::new();
 
-    opts.optflag("h", "help", "print this help menu");
-    opts.optmulti("w", "width", "Width of output", "50");
+    opts.optflag("h", "help", "Print this help menu");
+    opts.optmulti("W", "width", "Width of output", "50");
 
     let matches = match opts.parse(&args) {
         Ok(m) => { m }
@@ -105,7 +105,7 @@ fn main () {
         return;
     }
 
-    let width = match matches.opt_str("w") {
+    let width = match matches.opt_str("W") {
         None => { DEFAULT_LINE_WIDTH },
         Some(w) => { parse_numeric(w, DEFAULT_LINE_WIDTH) }
     };
@@ -119,4 +119,3 @@ fn main () {
 
     println!("{}", say(input, width));
 }
-

@@ -3,17 +3,24 @@ rsay
 
 A rusty fork of [gnusay](http://gnusay.sourceforge.net/)
 
-features
+Usage
 ---
 
-1. Blazing fast performance
-2. The lovely gnu
-3. Zero configuration
+Install via `cargo install rsay` (executables coming soon)
 
-todo
+```shell
+Usage: rsay [-OPTIONS] [ARG...]
+
+Options:
+    -h, --help          Print this help menu
+    -W, --width 50      Width of output
+```
+
+Todo
 ---
 
 - options
-  - width
   - user specified art
   - randomization
+- don't truncate words
+  - `-W 5 foo bar` should not result in `foo b\n ar`
