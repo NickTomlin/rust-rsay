@@ -1,21 +1,23 @@
+extern crate getopts;
+
 use std::io::prelude::*;
 use std::cmp;
+use getopts::Options;
 
+const PROGRAM_NAME: &'static str = "rsay";
 const GNU: &'static str = include_str!("gnu.txt");
-const LINE_LENGTH: usize = 40;
+const DEFAULT_LINE_WIDTH: usize = 40;
 
-fn main () {
-    let args: Vec<String> = std::env::args()
-        .skip(1)
-        .collect();
+fn print_usage (opts: Options) {
+    let brief = format!("Usage: {} [-OPTIONS] [ARG...]", PROGRAM_NAME);
+    print!("{}", opts.usage(&brief));
+}
 
-    if args.len() == 0 {
-        let _ = writeln!(std::io::stderr(), "Usage: gnusay PHRASE");
-        std::process::exit(1);
+fn parse_numeric(value: String, default: usize) -> usize {
+    match value.parse::<usize>() {
+        Ok(n) => { n },
+        Err(_) => { default },
     }
-
-    let formatted = say(args.join(" "));
-    println!("{}", formatted);
 }
 
 fn chunk_string (phrase: String, chunk_size: usize) -> Vec<String> {
@@ -46,8 +48,8 @@ fn chunk_string (phrase: String, chunk_size: usize) -> Vec<String> {
     chunks
 }
 
-fn multi_line (phrase: String) -> String {
-    let lines = chunk_string(phrase, LINE_LENGTH);
+fn multi_line (phrase: String, width: usize) -> String {
+    let lines = chunk_string(phrase, width);
     let total_length = lines.len() - 1;
 
     let formatted_lines = lines
@@ -70,16 +72,51 @@ fn single_line (phrase: String) -> String {
     format!("< {} >\n", phrase)
 }
 
-fn say (phrase: String) -> String {
+fn say (phrase: String, width: usize) -> String {
     let number_of_chars = phrase.chars().count();
-    let number_of_lines = number_of_chars / LINE_LENGTH;
-    let border_length = cmp::min(LINE_LENGTH, number_of_chars);
+    let number_of_lines = number_of_chars / width;
+    let border_length = cmp::min(width, number_of_chars);
     let border = (0..border_length + 2).map(|_| "-").collect::<String>();
 
     let formatted = match number_of_lines {
         0 => single_line(phrase),
-        _ => multi_line(phrase),
+        _ => multi_line(phrase, width),
     };
 
     format!(" {border}\n{} {border}\n{}", formatted, GNU, border = border)
 }
+
+fn main () {
+    let args: Vec<String> = std::env::args()
+        .skip(1)
+        .collect();
+    let mut opts = Options::new();
+
+    opts.optflag("h", "help", "print this help menu");
+    opts.optmulti("w", "width", "Width of output", "50");
+
+    let matches = match opts.parse(&args) {
+        Ok(m) => { m }
+        Err(f) => { panic!(f.to_string()) }
+    };
+
+    if matches.opt_present("h") {
+        print_usage(opts);
+        return;
+    }
+
+    let width = match matches.opt_str("w") {
+        None => { DEFAULT_LINE_WIDTH },
+        Some(w) => { parse_numeric(w, DEFAULT_LINE_WIDTH) }
+    };
+
+    let input = if !matches.free.is_empty() {
+        matches.free.join(" ")
+    } else {
+        print_usage(opts);
+        return;
+    };
+
+    println!("{}", say(input, width));
+}
+
