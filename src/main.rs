@@ -5,7 +5,7 @@ use std::cmp;
 use getopts::Options;
 
 const PROGRAM_NAME: &'static str = "rsay";
-const GNU: &'static str = include_str!("gnu.txt");
+const COW: &'static str = include_str!("cow.txt");
 const DEFAULT_LINE_WIDTH: usize = 40;
 
 fn print_usage (opts: Options) {
@@ -83,7 +83,7 @@ fn say (phrase: String, width: usize) -> String {
         _ => multi_line(phrase, width),
     };
 
-    format!(" {border}\n{} {border}\n{}", formatted, GNU, border = border)
+    format!(" {border}\n{} {border}\n{}", formatted, COW, border = border)
 }
 
 fn main () {
