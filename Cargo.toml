@@ -1,6 +1,7 @@
 [package]
-name = "gnusay"
+name = "rsay"
 version = "0.1.0"
+description = "A rusty cowsay"
 authors = ["Nick Tomlin <nick.tomlin@gmail.com>"]
 
 [dependencies]
