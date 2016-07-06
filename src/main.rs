@@ -20,36 +20,36 @@ fn parse_numeric(value: String, default: usize) -> usize {
     }
 }
 
-fn chunk_string (phrase: String, chunk_size: usize) -> Vec<String> {
-    let mut chunks = vec![];
-    let mut chunk = String::new();
-    let mut size = 0;
+fn chunk_args (args: Vec<String>, chunk_size: usize) -> Vec<String> {
+    let mut chunks = Vec::new();
 
-    for char in phrase.chars() {
-        if size == chunk_size {
-            chunks.push(chunk);
-            size = 0;
-            chunk = String::new();
+    for arg in args {
+        let mut x = 0;
+        let mut chunk = String::with_capacity(chunk_size);
+        for char in arg.chars() {
+            if x < chunk_size {
+                chunk.push(char);
+                x = x + 1;
+            }
+            if x == chunk_size {
+                chunks.push(chunk.clone());
+                chunk.clear();
+                x = 0;
+            }
         }
-
-        chunk.push(char);
-        size = size + 1;
-    }
-
-    if !chunk.is_empty() {
-        while size < chunk_size {
-            chunk.push(' ');
-            size = size + 1;
+        if !chunk.is_empty() {
+            while chunk.len() < chunk_size {
+                chunk.push(' ');
+            }
+            chunks.push(chunk.clone());
         }
-
-        chunks.push(chunk);
     }
 
     chunks
 }
 
-fn multi_line (phrase: String, width: usize) -> String {
-    let lines = chunk_string(phrase, width);
+fn multi_line (args: Vec<String>, width: usize) -> String {
+    let lines = chunk_args(args, width);
     let total_length = lines.len() - 1;
 
     let formatted_lines = lines
@@ -65,25 +65,26 @@ fn multi_line (phrase: String, width: usize) -> String {
             format!("{} {} {}\n", start, line, end)
         });
 
-    formatted_lines.collect::<String>()
+    formatted_lines.collect()
 }
 
-fn single_line (phrase: String) -> String {
-    format!("< {} >\n", phrase)
+fn single_line (phrase: Vec<String>) -> String {
+    format!("< {} >\n", phrase.join(" "))
 }
 
-fn say (phrase: String, width: usize) -> String {
+fn say (args: Vec<String>, width: usize) -> String {
+    let phrase = args.join(" ");
     let number_of_chars = phrase.chars().count();
     let number_of_lines = number_of_chars / width;
     let border_length = cmp::min(width, number_of_chars);
     let border = (0..border_length + 2).map(|_| "-").collect::<String>();
 
     let formatted = match number_of_lines {
-        0 => single_line(phrase),
-        _ => multi_line(phrase, width),
+        0 => single_line(args),
+        _ => multi_line(args, width),
     };
 
-    format!(" {border}\n{} {border}\n{}", formatted, COW, border = border)
+    format!(" {border}\n{} {border}", formatted, border = border)
 }
 
 fn main () {
@@ -111,11 +112,44 @@ fn main () {
     };
 
     let input = if !matches.free.is_empty() {
-        matches.free.join(" ")
+        matches.free
     } else {
         print_usage(opts);
         return;
     };
 
-    println!("{}", say(input, width));
+    println!("{}\n{}", say(input, width), COW);
+}
+
+#[cfg(test)]
+#[test]
+fn test_chunk_args_padding () {
+    let phrase = ["fooooo", "bar", "baz"].iter().map(|&x| x.into()).collect();
+    let result = chunk_args(phrase, 5);
+    assert_eq!(vec!["foooo".to_string(), "o    ".into(), "bar  ".into(), "baz  ".into()], result);
+}
+
+#[test]
+fn test_say_multi_line () {
+    let args = ["fooooo", "bar", "baz"].iter().map(|&x| x.into()).collect();
+    let result = say(args, 5);
+    let expected: String = r" -------
+/ foooo \
+| o     |
+| bar   |
+\ baz   /
+ -------".into();
+
+    assert_eq!(expected, result);
+}
+
+#[test]
+fn test_say_single_line () {
+    let args = ["foo bar baz"].iter().map(|&x| x.into()).collect();
+    let result = say(args, 40);
+    let expected: String = r" -------------
+< foo bar baz >
+ -------------".into();
+
+    assert_eq!(expected, result);
 }
