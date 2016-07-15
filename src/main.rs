@@ -26,9 +26,7 @@ fn chunk_args (args: Vec<String>, max_size: usize) -> Vec<String> {
         .fold(String::new(), |mut acc, arg| {
             if !acc.is_empty() {
                 if (arg.chars().count() + 1) + acc.chars().count() <= max_size {
-                    lines.push(acc.clone() + " " + arg);
-                    acc.clear();
-                    return acc;
+                    return acc + " " + arg;
                 } else {
                     lines.push(acc.clone());
                     acc.clear();
@@ -155,7 +153,7 @@ fn test_say_multi_line_wide () {
 
 #[test]
 fn test_say_single_line () {
-    let args = ["foo bar baz"].iter().map(|&x| x.into()).collect();
+    let args = ["foo", "bar", "baz"].iter().map(|&x| x.into()).collect();
     let result = say(args, 40);
     let expected: String = r" _____________
 < foo bar baz >
