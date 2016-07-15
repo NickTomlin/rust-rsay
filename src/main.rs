@@ -92,9 +92,10 @@ fn say (args: Vec<String>, desired_width: usize) -> String {
         _ => multi_line(chunks, width),
     };
 
-    let border = (0..width + 2).map(|_| "-").collect::<String>();
+    let top_border = (0..width + 2).map(|_| "_").collect::<String>();
+    let bottom_border = (0..width + 2).map(|_| "-").collect::<String>();
 
-    format!(" {border}\n{} {border}", formatted, border = border)
+    format!(" {}\n{} {}", top_border, formatted, bottom_border)
 }
 
 fn main () {
@@ -128,7 +129,7 @@ fn main () {
         return;
     };
 
-    println!("{}\n{}", say(input, width), COW);
+    print!("{}\n{}", say(input, width), COW);
 }
 
 #[cfg(test)]
@@ -143,7 +144,7 @@ fn test_chunk_args_padding () {
 fn test_say_multi_line () {
     let args = ["broke", "n big", "bar"].iter().map(|&x| x.into()).collect();
     let result = say(args, 5);
-    let expected: String = r" -------
+    let expected: String = r" _______
 / broke \
 | n big |
 \ bar   /
@@ -163,7 +164,7 @@ fn test_say_multi_line_wide () {
 fn test_say_single_line () {
     let args = ["foo bar baz"].iter().map(|&x| x.into()).collect();
     let result = say(args, 40);
-    let expected: String = r" -------------
+    let expected: String = r" _____________
 < foo bar baz >
  -------------".into();
 
