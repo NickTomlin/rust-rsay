@@ -3,6 +3,9 @@ name = "rsay"
 version = "0.1.0"
 description = "A rusty cowsay"
 authors = ["Nick Tomlin <nick.tomlin@gmail.com>"]
+readme = "README.md"
+repository = "https://github.com/NickTomlin/rust-rsay"
+license = "MIT"
 
 [dependencies]
 getopts = "0.2.14"
