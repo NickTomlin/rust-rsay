@@ -1,7 +1,7 @@
 rsay
 ===
 
-A rusty fork of [gnusay](http://gnusay.sourceforge.net/)
+A rusty fork of cowsay
 
 Usage
 ---
