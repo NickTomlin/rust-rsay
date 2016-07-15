@@ -21,7 +21,7 @@ fn parse_numeric(value: String, default: usize) -> usize {
 }
 
 fn chunk_args (args: Vec<String>, max_size: usize) -> Vec<String> {
-    let mut lines = vec![]; // we should declare a size for this to save on allocation...
+    let mut lines = Vec::with_capacity(args.len() * 2);
     let remainder: String = args.iter()
         .fold(String::new(), |mut acc, arg| {
             if !acc.is_empty() {
