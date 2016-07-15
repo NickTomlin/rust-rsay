@@ -22,5 +22,4 @@ Todo
 - options
   - user specified art
   - randomization
-- don't truncate words
-  - `-W 5 foo bar` should not result in `foo b\n ar`
+- multi os executables
