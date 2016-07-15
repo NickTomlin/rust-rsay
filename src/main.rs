@@ -75,10 +75,6 @@ fn multi_line (args: Vec<String>, width: usize) -> String {
     formatted_lines.collect()
 }
 
-fn single_line (phrase: Vec<String>) -> String {
-    format!("< {} >\n", phrase.join(" "))
-}
-
 fn say (args: Vec<String>, desired_width: usize) -> String {
     let chunks = chunk_args(args, desired_width);
     let largest_str = chunks.iter().map(|x| x.chars().count()).max();
@@ -86,12 +82,10 @@ fn say (args: Vec<String>, desired_width: usize) -> String {
         Some(x) => { cmp::min(desired_width, x) },
         _ => { desired_width }
     };
-
     let formatted = match chunks.len() {
-        1 => single_line(chunks),
+        1 => format!("< {} >\n", chunks.join(" ")),
         _ => multi_line(chunks, width),
     };
-
     let top_border = (0..width + 2).map(|_| "_").collect::<String>();
     let bottom_border = (0..width + 2).map(|_| "-").collect::<String>();
 
