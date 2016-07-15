@@ -7,6 +7,12 @@ readme = "README.md"
 repository = "https://github.com/NickTomlin/rust-rsay"
 license = "MIT"
 
+exclude = [
+  "ci/*",
+  "travis.yml",
+  "appveyor.yml",
+]
+
 [dependencies]
 getopts = "0.2.14"
 
