@@ -53,8 +53,7 @@ fn chunk_args (args: Vec<String>, max_size: usize) -> Vec<String> {
     lines
 }
 
-fn multi_line (args: Vec<String>, width: usize) -> String {
-    let lines = chunk_args(args, width);
+fn multi_line (lines: Vec<String>, width: usize) -> String {
     let total_length = lines.len() - 1;
 
     let formatted_lines = lines
