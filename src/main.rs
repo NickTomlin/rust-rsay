@@ -20,6 +20,8 @@ fn parse_numeric(value: String, default: usize) -> usize {
     }
 }
 
+// Ensure that lines have a maximum length of max_size
+// and that there is a one space buffer between args
 fn chunk_args (args: Vec<String>, max_size: usize) -> Vec<String> {
     let mut lines = Vec::with_capacity(args.len() * 2);
     let remainder: String = args.iter()
@@ -51,6 +53,10 @@ fn chunk_args (args: Vec<String>, max_size: usize) -> Vec<String> {
     lines
 }
 
+// Add the proper border to each line
+// / first \
+// | rest  |
+// \ last  /
 fn multi_line (lines: Vec<String>, width: usize) -> String {
     let total_length = lines.len() - 1;
 
@@ -83,8 +89,8 @@ fn say (args: Vec<String>, desired_width: usize) -> String {
         1 => format!("< {} >\n", chunks.join(" ")),
         _ => multi_line(chunks, width),
     };
-    let top_border = (0..width + 2).map(|_| "_").collect::<String>();
-    let bottom_border = (0..width + 2).map(|_| "-").collect::<String>();
+    let top_border: String = (0..width + 2).map(|_| "_").collect();
+    let bottom_border: String = (0..width + 2).map(|_| "-").collect();
 
     format!(" {}\n{} {}", top_border, formatted, bottom_border)
 }
